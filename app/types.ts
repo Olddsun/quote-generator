@@ -1,6 +1,7 @@
 export interface LineItem {
   id: string
   description: string
+  note: string
   quantity: number
   unitPrice: number
 }
@@ -15,6 +16,7 @@ export interface QuoteData {
   issueDate: string
   validDate: string
   clientName: string
+  clientTaxId: string
   clientAddress: string
   clientContact: string
   items: LineItem[]

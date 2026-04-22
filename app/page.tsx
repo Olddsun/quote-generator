@@ -1,10 +1,8 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import dynamic from 'next/dynamic'
+import QuotePreview from './components/QuotePreview'
 import type { QuoteData, LineItem } from './types'
-
-const QuotePreview = dynamic(() => import('./components/QuotePreview'), { ssr: false })
 
 const today = new Date().toISOString().split('T')[0]
 const thirtyDaysLater = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]
@@ -19,9 +17,10 @@ const initialData: QuoteData = {
   issueDate: today,
   validDate: thirtyDaysLater,
   clientName: '',
+  clientTaxId: '',
   clientAddress: '',
   clientContact: '',
-  items: [{ id: '1', description: '', quantity: 1, unitPrice: 0 }],
+  items: [{ id: '1', description: '', note: '', quantity: 1, unitPrice: 0 }],
   taxEnabled: false,
   taxRate: 5,
   currency: 'NT$',
@@ -49,7 +48,7 @@ export default function Page() {
   function addItem() {
     setData(prev => ({
       ...prev,
-      items: [...prev.items, { id: generateId(), description: '', quantity: 1, unitPrice: 0 }],
+      items: [...prev.items, { id: generateId(), description: '', note: '', quantity: 1, unitPrice: 0 }],
     }))
   }
 
@@ -272,6 +271,10 @@ export default function Page() {
                 <input className={inputClass} value={data.clientName} onChange={e => set('clientName', e.target.value)} placeholder="客戶名稱" />
               </div>
               <div>
+                <label className={labelClass}>統一編號</label>
+                <input className={inputClass} value={data.clientTaxId} onChange={e => set('clientTaxId', e.target.value)} placeholder="12345678" maxLength={8} />
+              </div>
+              <div>
                 <label className={labelClass}>地址</label>
                 <input className={inputClass} value={data.clientAddress} onChange={e => set('clientAddress', e.target.value)} placeholder="客戶地址" />
               </div>
@@ -308,12 +311,22 @@ export default function Page() {
                   </div>
                   <div className="space-y-2">
                     <div>
-                      <label className={labelClass}>項目說明</label>
+                      <label className={labelClass}>項目名稱</label>
                       <input
                         className={inputClass}
                         value={item.description}
                         onChange={e => updateItem(item.id, 'description', e.target.value)}
-                        placeholder="工作項目說明"
+                        placeholder="工作項目名稱"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>說明（選填）</label>
+                      <textarea
+                        className={`${inputClass} resize-none`}
+                        rows={2}
+                        value={item.note}
+                        onChange={e => updateItem(item.id, 'note', e.target.value)}
+                        placeholder="項目細節、交付內容等..."
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -428,11 +441,12 @@ export default function Page() {
             <div className="overflow-x-auto">
               <div className="flex justify-start lg:justify-center">
                 <div
+                  ref={previewRef}
                   data-preview
                   style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.10)' }}
                   className="rounded-sm"
                 >
-                  <QuotePreview ref={previewRef} data={data} />
+                  <QuotePreview data={data} />
                 </div>
               </div>
             </div>

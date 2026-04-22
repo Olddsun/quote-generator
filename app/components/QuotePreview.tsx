@@ -1,6 +1,5 @@
 'use client'
 
-import { forwardRef } from 'react'
 import type { QuoteData } from '../types'
 
 interface Props {
@@ -11,14 +10,13 @@ function formatCurrency(amount: number, currency: string) {
   return `${currency} ${amount.toLocaleString('zh-TW')}`
 }
 
-const QuotePreview = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
+export default function QuotePreview({ data }: Props) {
   const subtotal = data.items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0)
   const tax = data.taxEnabled ? subtotal * (data.taxRate / 100) : 0
   const total = subtotal + tax
 
   return (
     <div
-      ref={ref}
       style={{
         width: '794px',
         minHeight: '1123px',
@@ -30,6 +28,7 @@ const QuotePreview = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
         lineHeight: '1.6',
       }}
     >
+
       {/* 頁首：公司資訊 + 報價單標題 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '48px' }}>
         <div>
@@ -83,6 +82,9 @@ const QuotePreview = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
         <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
           {data.clientName || '客戶名稱'}
         </div>
+        {data.clientTaxId && (
+          <div style={{ color: '#555', fontSize: '13px', marginBottom: '2px' }}>統一編號：{data.clientTaxId}</div>
+        )}
         {data.clientAddress && (
           <div style={{ color: '#555', fontSize: '13px', marginBottom: '2px' }}>{data.clientAddress}</div>
         )}
@@ -116,7 +118,12 @@ const QuotePreview = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
               style={{ borderBottom: '1px solid #e2e8f0', background: index % 2 === 0 ? '#fff' : '#fafafa' }}
             >
               <td style={{ padding: '12px 14px', fontSize: '14px' }}>
-                {item.description || '—'}
+                <div>{item.description || '—'}</div>
+                {item.note && (
+                  <div style={{ fontSize: '12px', color: '#888', marginTop: '3px', whiteSpace: 'pre-wrap' }}>
+                    {item.note}
+                  </div>
+                )}
               </td>
               <td style={{ padding: '12px 14px', textAlign: 'center', fontSize: '14px', color: '#555' }}>
                 {item.quantity}
@@ -165,8 +172,4 @@ const QuotePreview = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
       )}
     </div>
   )
-})
-
-QuotePreview.displayName = 'QuotePreview'
-
-export default QuotePreview
+}
