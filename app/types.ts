@@ -25,3 +25,13 @@ export interface QuoteData {
   currency: string
   notes: string
 }
+
+export interface SavedQuote {
+  id: string
+  savedAt: string
+  quoteNumber: string
+  clientName: string
+  total: number
+  currency: string
+  data: QuoteData
+}
