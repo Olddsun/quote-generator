@@ -11,10 +11,10 @@ const thirtyDaysLater = new Date(Date.now() + 30 * 86400000).toISOString().split
 
 const initialData: QuoteData = {
   title: '報價單',
-  companyName: '',
-  companyAddress: '',
-  companyPhone: '',
-  companyEmail: '',
+  companyName: '孫啓勛',
+  companyAddress: '台北市信義區永吉路 30 巷 119 弄 24 號 6 樓',
+  companyPhone: '0921699437',
+  companyEmail: 'chihsun1026@gmail.com',
   quoteNumber: 'QT-001',
   issueDate: today,
   validDate: thirtyDaysLater,
